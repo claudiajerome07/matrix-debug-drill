@@ -9,7 +9,6 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
@@ -20,6 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         node: [18, 20, 22]
+        experimental: [false]
 
         include:
           - os: ubuntu-latest

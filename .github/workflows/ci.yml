@@ -9,18 +9,35 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+
+    continue-on-error: ${{ matrix.experimental }}
+
     strategy:
+      # Do not stop early if one matrix job fails.
+      # This lets us see compatibility results for every OS/Node combination.
+      fail-fast: false
+
       matrix:
         os: [ubuntu-latest, windows-latest]
         node: [18, 20, 22]
+
+        include:
+          - os: ubuntu-latest
+            node: 24
+            experimental: true
+
     steps:
       - uses: actions/checkout@v4
-      - name: Print environment info for debugging
-        run: |
-          node --version
-          npm --version
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+
+      - name: Print environment info
+        run: |
+          node --version
+          npm --version
+
       - run: npm ci
+
       - run: npm test
